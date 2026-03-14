@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>全國圖鑑 3D 寶可夢對戰</title>
+  <style>
+    /* 基礎防呆與重置 */
+    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+    body {
+      margin: 0; padding: 20px; font-family: "Microsoft JhengHei", sans-serif;
+      background-color: #f0f2f5; touch-action: pan-y; overflow-x: hidden;
+    }
+    .控制區域 { text-align: center; margin-bottom: 20px; }
+    button {
+      padding: 10px 20px; font-size: 16px; cursor: pointer;
+      background-color: #ffcc00; border: 2px solid #b38f00;
+      border-radius: 8px; font-weight: bold; transition: opacity 0.3s;
+    }
+    button:disabled { background-color: #ccc; border-color: #999; cursor: not-allowed; opacity: 0.7; }
+
+    /* 3D 旋轉舞台 */
+    #旋轉舞台區 { display: none; width: 100%; min-height: 450px; overflow: hidden; padding-top: 20px; }
+    .視覺場景 { width: 220px; height: 350px; margin: 20px auto; perspective: 1000px; }
+    .旋轉容器 {
+      width: 100%; height: 100%; position: relative;
+      transform-style: preserve-3d; transition: transform 0.1s ease-out;
+      transform: translateZ(-280px);
+    }
+    .卡牌 {
+      position: absolute; width: 220px; height: 340px;
+      background: white; border: 3px solid #ddd; border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2); text-align: center;
+      padding: 10px; backface-visibility: hidden;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .卡牌 img { width: 120px; height: 120px; margin: 0 auto; pointer-events: none; }
+    .屬性標籤 { display: inline-block; padding: 2px 8px; margin: 2px; background: #eee; border-radius: 10px; font-size: 12px; }
+
+    /* 戰鬥畫面 RWD */
+    .戰鬥競技場 {
+      display: none; flex-direction: row; justify-content: center;
+      align-items: stretch; gap: 20px; max-width: 1000px; margin: 0 auto;
+    }
+    .玩家區域 { order: 1; width: 30%; }
+    .紀錄區域 { order: 2; width: 40%; display: flex; flex-direction: column; }
+    .對手區域 { order: 3; width: 30%; }
+    .戰鬥卡牌 { background: white; border: 2px solid #ccc; border-radius: 10px; padding: 15px; text-align: center; }
+    .戰鬥卡牌 img { width: 150px; height: 150px; }
+    .血條容器 { width: 100%; height: 15px; background: #ddd; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .血條填充 { height: 100%; background: #4caf50; transition: width 0.3s ease-out; }
+    #戰鬥紀錄 {
+      flex-grow: 1; background: #111; color: #fff; height: 350px;
+      overflow-y: auto; padding: 15px; border-radius: 8px; font-size: 14px;
+    }
+    .勝負文字 { color: #ffeb3b; font-weight: bold; }
+
+    @media (max-width: 768px) {
+      .視覺場景 { transform: scale(0.65); margin: -50px auto; }
+      .戰鬥競技場 { flex-direction: column; }
+      .對手區域 { order: 1; width: 100%; }
+      .紀錄區域 { order: 2; width: 100%; }
+      .玩家區域 { order: 3; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="控制區域">
+    <button id="抽卡按鈕" disabled>正在下載全國中文圖鑑...</button>
+  </div>
+  <div id="旋轉舞台區">
+    <div class="視覺場景" id="場景">
+      <div class="旋轉容器" id="旋轉木馬"></div>
+    </div>
+  </div>
+  <div id="戰鬥舞台" class="戰鬥競技場">
+    <div class="玩家區域" id="玩家卡牌位置"></div>
+    <div class="紀錄區域">
+      <div id="戰鬥紀錄"></div>
+      <button id="開始戰鬥按鈕">開始戰鬥</button>
+    </div>
+    <div class="對手區域" id="對手卡牌位置"></div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
